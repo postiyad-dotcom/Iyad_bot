@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <title>💬 Gemini Chatbot</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
@@ -111,7 +117,7 @@
       conversationHistory.push({ role: "user", text: input });
 
       const prompt = `
-You are Gemini, a friendly and witty AI chatbot with a Gen Z vibe like Copilot. Respond with personality, formatting, and helpfulness. Keep it fun, smart, and engaging.
+You are Gemini, a witty and helpful AI chatbot with a Gen Z vibe like Copilot. Respond with personality, formatting, and helpfulness. Keep it fun, smart, and engaging.
 
 Conversation so far:
 ${conversationHistory.map(msg => `${msg.role === "user" ? "User" : "Gemini"}: ${msg.text}`).join("\n")}
