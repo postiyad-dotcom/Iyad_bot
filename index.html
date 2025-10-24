@@ -2,14 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>💬 Gemini Chatbot</title>
+  <title>💬 Cohere Chatbot</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
@@ -96,17 +90,17 @@
 </head>
 <body>
   <div class="chat-container">
-    <h2>🤖 Chat with Gemini</h2>
+    <h2>🤖 Chat with Cohere</h2>
     <div id="chatLog">👋 Welcome! Ask me anything...</div>
     <div class="input-area">
       <input type="text" id="userInput" placeholder="💡 Type your prompt here...">
       <button onclick="sendMessage()">Send</button>
     </div>
   </div>
-  <footer>Powered by Gemini API • Styled by Iyad 💻</footer>
+  <footer>Powered by Cohere API • Styled by Iyad 💻</footer>
 
   <script>
-    let conversationHistory = [];
+    let chatHistory = [];
 
     async function sendMessage() {
       const input = document.getElementById("userInput").value;
@@ -114,29 +108,27 @@
 
       const chatLog = document.getElementById("chatLog");
       chatLog.innerHTML += `🧑 You: ${input}<br>`;
-      conversationHistory.push({ role: "user", text: input });
+      chatHistory.push({ role: "USER", message: input });
 
-      const prompt = `
-You are Gemini, a witty and helpful AI chatbot with a Gen Z vibe like Copilot. Respond with personality, formatting, and helpfulness. Keep it fun, smart, and engaging.
-
-Conversation so far:
-${conversationHistory.map(msg => `${msg.role === "user" ? "User" : "Gemini"}: ${msg.text}`).join("\n")}
-
-Gemini:
-`;
-
-      const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyB6wnMACXRYvkg76SZTxyPD3EvvxRjDEGw", {
+      const response = await fetch("https://api.cohere.ai/v1/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Authorization": "Bearer DjNVVEnfSOiXdLllofiNNfDQVsnGX6JKdFOkTngq",
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }]
+          model: "command-r-plus",
+          chat_history: chatHistory,
+          message: input,
+          temperature: 0.7,
+          stream: false
         })
       });
 
       const data = await response.json();
-      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "⚠️ Gemini didn’t reply.";
-      conversationHistory.push({ role: "gemini", text: reply });
-      chatLog.innerHTML += `🤖 Gemini: ${reply}<br><br>`;
+      const reply = data.text || "⚠️ Cohere didn’t reply.";
+      chatHistory.push({ role: "CHATBOT", message: reply });
+      chatLog.innerHTML += `🤖 Cohere: ${reply}<br><br>`;
       document.getElementById("userInput").value = "";
       chatLog.scrollTop = chatLog.scrollHeight;
     }
